@@ -16,9 +16,7 @@
   ],
 
   "scripts": {
-    "build":"tsc",
-    "dev:worker":"ts-node src/worker/index.ts",
-    "dev:migrate":"ts-node src/storage/migration.ts"
+    "build":"tsc"
   },
    "keywords": [
     "queue",

@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 import { randomUUID } from "crypto";
 
-export class Queue {
+export class Queue<JobMap extends Record<string,any>> {
   constructor(private pool: Pool) {}
-  async add(
-    type: string,
-    payload: any,
+  async add<K extends keyof JobMap>(
+    type: K,
+    payload: JobMap[K],
     options?: {
       idempotencyKey?: string;
       maxRetries?: number;

@@ -2,15 +2,19 @@ import { Pool } from "pg";
 import { JobHandler } from "./types";
 import { IdempotencyStore } from "../idempotency/Idempotency";
 
-export class Worker {
-  private handlers: Record<string, JobHandler>;
+export class Worker<JobMap extends Record<string, any>> {
+  private handlers: {
+    [K in keyof JobMap]  : JobHandler<JobMap[K]>
+  };
   private pool: Pool;
   private idempotency: IdempotencyStore;
   private workerId: string;
 
   constructor(
     queue: any,
-    handlers: Record<string, JobHandler>
+    handlers: {
+      [K in keyof JobMap]: JobHandler<JobMap[K]>;
+    }
   ) {
     this.pool = (queue as any).pool;
     this.handlers = handlers;
@@ -34,7 +38,7 @@ export class Worker {
           10_000
         );
 
-        const handler = this.handlers[job.type];
+        const handler = this.handlers[job.type as keyof JobMap];
         if (!handler) {
           throw new Error(`No handler for job type ${job.type}`);
         }
