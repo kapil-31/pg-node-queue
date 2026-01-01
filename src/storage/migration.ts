@@ -1,9 +1,9 @@
-import "dotenv/config";
+import { Pool } from "pg";
 
-import {pool } from './pool'
+export async function migrate(config: { connectionString: string }) {
+  const pool = new Pool({ connectionString: config.connectionString });
 
-async function migrate(){
-    await pool.query(`
+  await pool.query(`
         CREATE TABLE IF NOT EXISTS jobs (
         id UUID PRIMARY KEY,
         type TEXT NOT NULL,
@@ -26,10 +26,15 @@ async function migrate(){
 
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
-        )`);
+        );
 
-        console.log('================Migration Completed===========');
-        process.exit(0)
+        CREATE TABLE IF NOT EXISTS idempotency_keys (
+        key TEXT PRIMARY KEY,
+        created_at TIMESTAMP DEFAULT NOW()
+        );
+        
+        `);
+
+  console.log("================Migration Completed===========");
+  await pool.end();
 }
-
-migrate();
