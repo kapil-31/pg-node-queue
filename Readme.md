@@ -1,17 +1,17 @@
-# node-queue
+# pg-pg-node-queue
 
 > 🚧 **Work in Progress** — Actively developed to explore reliable background job execution with PostgreSQL.
 
-**node-queue** is a Postgres-backed job queue engine for Node.js focused on **correctness, crash safety, retries, leasing, and idempotent side effects**.
+**pg-node-queue** is a Postgres-backed job queue engine for Node.js focused on **correctness, crash safety, retries, leasing, and idempotent side effects**.
 
 It is designed as an **embeddable library**, not a hosted service or black-box framework.
 
 ---
 
-## Why node-queue?
+## Why pg-node-queue?
 
 Most job queues hide failure modes.  
-`node-queue` does the opposite.
+`pg-node-queue` does the opposite.
 
 This project exists to:
 - Embrace retries instead of pretending they don’t happen
@@ -57,12 +57,12 @@ This project exists to:
 ## Installation
 
 ```bash
-npm install node-queue
+npm install pg-node-queue
 export DATABASE_URL=postgres://user@localhost:5432/database_name
 ⚠️ The CLI does not load .env files automatically.
 Make sure DATABASE_URL is available in the environment.
 
-npx node-queue migrate
+npx pg-node-queue migrate
 ```
 
 ## Basic Concepts
@@ -104,7 +104,7 @@ export type Jobs = {
 
  ## Create a Queue (Producer)
 
- ```bash import { createQueue } from "node-queue";
+ ```bash import { createQueue } from "pg-node-queue";
 import { Jobs } from "./jobs";
 
 const queue = createQueue<Jobs>({
@@ -142,7 +142,7 @@ await queue.add(
 ## Create a Worker (Consumer)
 
 ```bash 
-import { Worker } from "node-queue";
+import { Worker } from "pg-node-queue";
 import { Jobs } from "./jobs";
 
 const worker = new Worker<Jobs>(queue, {
