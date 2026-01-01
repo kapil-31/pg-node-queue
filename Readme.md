@@ -162,3 +162,106 @@ const worker = new Worker<Jobs>(queue, {
 worker.start();
 
 ```
+
+### JobContext API
+Each handler receives a JobContext object.
+```bash
+ctx.jobId       // Unique job ID
+ctx.retryCount  // Current retry attempt
+ ```
+
+ ### Idempotent Side Effects (ctx.runOnce)
+
+Jobs may execute more than once.
+Side effects must not.
+
+Use ctx.runOnce() to protect external actions:
+
+```bash      
+await ctx.runOnce("send-email", async () => {
+  await mailer.send(payload);
+});
+   ```
+### Guarantees:
+
+- Executes at most once
+
+- Safe under retries
+
+- Safe under crashes
+
+- Safe with multiple workers
+
+- Principle: Jobs are retryable. Side effects are not.
+
+
+### Retry & Backoff Model
+
+- Failed jobs retry automatically
+
+- Exponential backoff is enforced via the database
+
+- Workers only claim jobs eligible to run
+
+- Jobs exceeding retries move to DEAD_LETTER
+
+- No worker-side sleep or timers are used.
+
+
+### Worker Execution Model
+
+- Workers pull jobs continuously
+
+- One job per worker at a time
+
+- Leases prevent duplicate execution
+
+- Crashed workers do not lose jobs
+
+
+
+### Use Cases
+
+- Transactional emails
+
+- Image processing / thumbnail generation
+
+- Video transcoding
+
+- File upload post-processing
+
+- Webhook delivery
+
+- Background data processing
+
+- Cleanup & maintenance tasks
+
+
+### Status
+
+This project is under active development.
+Breaking changes may occur before 1.0.0.
+
+
+# License
+MIT License
+
+Copyright (c) 2025 Kapil Karki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
