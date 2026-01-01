@@ -1,25 +1,40 @@
 {
-  "name": "atlasq",
+  "name": "node-queue",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate":"ts-node ./src/db/migrate.ts",
-    "server": "ts-node ./src/index.ts",
-    "worker": "ts-node ./src/worker/index.ts"
-  },
-  "keywords": [],
+  "description": "A Postgres-backed job queue engine with leasing, retries, and idempotent side effects.",
   "author": "kapil karki",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "pg": "^8.16.3",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3",
-    "zod": "^4.3.4"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+
+  "bin": {
+    "node-queue":"dist/cli/index.js"
   },
-  "devDependencies": {
+
+  "files": [
+    "dist"
+  ],
+
+  "scripts": {
+    "build":"tsc",
+    "dev:worker":"ts-node src/worker/index.ts",
+    "dev:migrate":"ts-node src/storage/migration.ts"
+  },
+   "keywords": [
+    "queue",
+    "job-queue",
+    "postgres",
+    "background-jobs",
+    "distributed-systems",
+    "worker"
+  ],
+  
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+   "devDependencies": {
+    "typescript": "^5.9.3",
+    "ts-node": "^10.9.2",
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0"
   }
