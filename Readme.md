@@ -1,4 +1,4 @@
-# pg-pg-node-queue
+# pg-node-queue
 
 > 🚧 **Work in Progress** — Actively developed to explore reliable background job execution with PostgreSQL.
 
